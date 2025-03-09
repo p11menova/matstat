@@ -10,6 +10,11 @@
 Построить график эмпирической функции распределения, гистограмму и
  box-plot суммарной площади чашелистика и лепестка для всей совокупности и каждого вида.
 """
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 irises_species = dict()  # мапа для разделения по видам
 irises = []  # просто в целом список всех ирисов
 
@@ -79,6 +84,21 @@ def get_sample_quantile(irises, length_key, width_key, p):
 
     return round(areas[lower] + (areas[upper] - areas[lower]) * fraction, 4)
 
+def empirical_cdf(data, title):
+    """
+    Строит эмпирическую функцию распределения (ЭФР) для заданных данных.
+    :param data: список или numpy-массив с данными
+    """
+    hist, edges = np.histogram(data, bins=len(data))
+    Y = hist.cumsum()
+    for i in range(len(Y)):
+        plt.plot([edges[i], edges[i + 1]], [Y[i], Y[i]], c="blue")
+    plt.xlabel('Значение')
+    plt.ylabel('F(x)')
+    plt.title('ЭФР ' + title)
+    plt.grid()
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     read_data("iris.csv")
@@ -126,3 +146,9 @@ if __name__ == "__main__":
         print(f"\t-выборочная квантиль порядка 2/5 значений площади лепестка: "
               f"{get_sample_quantile(v, 'petal_length', 'petal_width', 0.4)}")
         print()
+
+        # Эмпирические функции распределения для каждого вида цветка
+        # Функции для площади чашелистика
+        empirical_cdf([i['sepal_length'] * i['sepal_width'] for i in v], 'площади чашелистика для вида ' + k)
+        # Функции для площади лепестка
+        empirical_cdf([i['petal_length'] * i['petal_width'] for i in v], 'площади лепестка ' + k)
