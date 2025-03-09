@@ -104,19 +104,24 @@ def empirical_cdf(data, title):
 
 
 def draw_histogram(iris_areas, sepal=True, specie=''):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 6))
 
     gist_color ='tomato' if sepal else 'pink'
     gist_title = "гистограмма распределения суммарной площади "
-    gist_type = "чашелистиков" if sepal else  'лепестков'
+    gist_type = "чашелистиков" if sepal else 'лепестков'
     plt.hist(iris_areas, bins=20, color=gist_color, alpha=0.5, edgecolor=gist_color)
-    plt.title(f"{gist_title + gist_type} для вида {specie} " if specie else f"{gist_title} для всей выборки")
+    plt.title(f"{gist_title + gist_type} для вида {specie} " if specie else f"{gist_title+gist_type} для всей выборки")
     plt.xlabel('площадь чашелистика' if sepal else 'площадь лепестка')
     plt.ylabel('частота')
-    plt.grid("both")
+    if (sepal):
+        plt.xticks(range(10, 32, 2))
+    else:
+        plt.xticks(range(0, 18, 1 ))
+    plt.grid("both", color="silver", alpha=0.5)
     filename = "sepal_squares" if sepal else "petal_squares"
     scope = "_whole" if not specie else f"_{specie}"
     plt.savefig(filename + scope + '.png')
+    plt.legend()
     plt.close()
 
 
