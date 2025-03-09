@@ -1,3 +1,5 @@
+
+
 """
 1. В файле iris.csv' (здесь и далее ссылкы кликабельны) представлены данные о параметрах различных
 экземплярах цветка ириса.
@@ -84,6 +86,7 @@ def get_sample_quantile(irises, length_key, width_key, p):
 
     return round(areas[lower] + (areas[upper] - areas[lower]) * fraction, 4)
 
+
 def empirical_cdf(data, title):
     """
     Строит эмпирическую функцию распределения (ЭФР) для заданных данных.
@@ -99,6 +102,16 @@ def empirical_cdf(data, title):
     plt.grid()
     plt.legend()
     plt.show()
+
+
+def draw_histogram(gist_title, iris_areas, gist_color, sepal=True, specie=''):
+    plt.figure(figsize=(8, 6))
+    plt.hist(iris_areas, bins=20, edgecolor='black')
+    plt.title(f"{gist_title} for {specie}" if specie else f"{gist_title} for whole values")
+    plt.xlabel('площадь чашелистика' if sepal else 'площадь лепестка')
+    plt.ylabel('частота')
+    plt.savefig(gist_title + '.png')
+    plt.close()
 
 if __name__ == "__main__":
     read_data("iris.csv")
@@ -125,6 +138,11 @@ if __name__ == "__main__":
           f"{get_sample_quantile(irises, 'sepal_length', 'sepal_width', 0.4)}")
     print(f"выборочная квантиль порядка 2/5 значений площади лепестка для всей совокупности: "
           f"{get_sample_quantile(irises, 'petal_length', 'petal_width', 0.4)}")
+    sepal_areas = [i['sepal_length'] * i['sepal_width'] for i in irises]
+    petal_areas = [i['petal_length'] * i['petal_width'] for i in irises]
+    draw_histogram("sepal_squares", sepal_areas, 1)
+    draw_histogram("petal_squares", petal_areas, 1, False)
+
     print()
     for k, v in irises_species.items():
         print(f"для вида: {k}")
