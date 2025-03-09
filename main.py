@@ -1,5 +1,3 @@
-
-
 """
 1. В файле iris.csv' (здесь и далее ссылкы кликабельны) представлены данные о параметрах различных
 экземплярах цветка ириса.
@@ -12,7 +10,8 @@
 Построить график эмпирической функции распределения, гистограмму и
  box-plot суммарной площади чашелистика и лепестка для всей совокупности и каждого вида.
 """
-
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -104,14 +103,22 @@ def empirical_cdf(data, title):
     plt.show()
 
 
-def draw_histogram(gist_title, iris_areas, gist_color, sepal=True, specie=''):
-    plt.figure(figsize=(8, 6))
-    plt.hist(iris_areas, bins=20, edgecolor='black')
-    plt.title(f"{gist_title} for {specie}" if specie else f"{gist_title} for whole values")
+def draw_histogram(iris_areas, sepal=True, specie=''):
+    plt.figure(figsize=(10, 6))
+
+    gist_color ='tomato' if sepal else 'pink'
+    gist_title = "гистограмма распределения суммарной площади "
+    gist_type = "чашелистиков" if sepal else  'лепестков'
+    plt.hist(iris_areas, bins=20, color=gist_color, alpha=0.5, edgecolor=gist_color)
+    plt.title(f"{gist_title + gist_type} для вида {specie} " if specie else f"{gist_title} для всей выборки")
     plt.xlabel('площадь чашелистика' if sepal else 'площадь лепестка')
     plt.ylabel('частота')
-    plt.savefig(gist_title + '.png')
+    plt.grid("both")
+    filename = "sepal_squares" if sepal else "petal_squares"
+    scope = "_whole" if not specie else f"_{specie}"
+    plt.savefig(filename + scope + '.png')
     plt.close()
+
 
 if __name__ == "__main__":
     read_data("iris.csv")
@@ -140,8 +147,8 @@ if __name__ == "__main__":
           f"{get_sample_quantile(irises, 'petal_length', 'petal_width', 0.4)}")
     sepal_areas = [i['sepal_length'] * i['sepal_width'] for i in irises]
     petal_areas = [i['petal_length'] * i['petal_width'] for i in irises]
-    draw_histogram("sepal_squares", sepal_areas, 1)
-    draw_histogram("petal_squares", petal_areas, 1, False)
+    draw_histogram(sepal_areas)
+    draw_histogram(petal_areas, False)
 
     print()
     for k, v in irises_species.items():
@@ -163,6 +170,10 @@ if __name__ == "__main__":
               f"{get_sample_quantile(v, 'sepal_length', 'sepal_width', 0.4)}")
         print(f"\t-выборочная квантиль порядка 2/5 значений площади лепестка: "
               f"{get_sample_quantile(v, 'petal_length', 'petal_width', 0.4)}")
+        sepal_areas = [i['sepal_length'] * i['sepal_width'] for i in v]
+        petal_areas = [i['petal_length'] * i['petal_width'] for i in v]
+        draw_histogram(sepal_areas, True, k)
+        draw_histogram(petal_areas, False, k)
         print()
 
         # Эмпирические функции распределения для каждого вида цветка
