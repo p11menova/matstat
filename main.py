@@ -110,13 +110,12 @@ def custom_boxplot(data, title, specie):
 	Строит box-plot с учетом заданного квантиля для усов.
 	:param data: список или numpy-массив с данными
 	"""
-	lower_quantile = np.quantile(data, 0.4)
-	upper_quantile = np.quantile(data, 0.4)
-
-	plt.boxplot(data, vert=True, whis=[lower_quantile, upper_quantile])
+	plt.boxplot(data)
+	for i, d in enumerate(data):
+		plt.scatter(1, d, c="blue", alpha=0.5)
 	plt.xlabel('Данные')
 	plt.ylabel('Значение')
-	plt.title(f'Box-plot для {title}')
+	plt.title(f'Box-plot для {title} {specie}')
 	plt.grid()
 	filename = "boxplot_sepal_squares" if 'чашелистика' in title else "boxplot_petal_squares"
 	scope = "_whole" if not specie else f"_{specie}"
