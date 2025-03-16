@@ -97,7 +97,7 @@ def empirical_cdf(data, title, specie):
         plt.plot([edges[i], edges[i + 1]], [Y[i], Y[i]], c="blue")
     plt.xlabel('Значение')
     plt.ylabel('F(x)')
-    plt.title('ЭФР ' + title)
+    plt.title(f'ЭФР {title} {specie}')
     plt.grid()
     plt.legend()
     filename = "efr_sepal_squares" if 'чашелистика' in title else "efr_petal_squares"
@@ -113,10 +113,10 @@ def custom_boxplot(data, title, specie):
     """
     plt.boxplot(data)
     for i, d in enumerate(data):
-		plt.scatter(1, d, c="blue", alpha=0.5)
-	plt.xlabel('Данные')
-	plt.ylabel('Значение')
-	plt.title(f'Box-plot для {title} {specie}')
+        plt.scatter(1, d, c="blue", alpha=0.5)
+    plt.xlabel('Данные')
+    plt.ylabel('Значение')
+    plt.title(f'Box-plot для {title} {specie}')
     plt.grid()
     filename = "boxplot_sepal_squares" if 'чашелистика' in title else "boxplot_petal_squares"
     scope = "_whole" if not specie else f"_{specie}"
