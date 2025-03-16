@@ -11,6 +11,7 @@
  box-plot суммарной площади чашелистика и лепестка для всей совокупности и каждого вида.
 """
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 from scipy.stats import norm, lognorm, gamma, expon, uniform
 
@@ -125,10 +126,12 @@ def custom_boxplot(data, title, specie):
 def draw_histogram(iris_areas, specie=''):
     plt.figure(figsize=(12, 6))
 
+    print(list(sorted(iris_areas)))
+
     gist_color = 'hotpink'
     gist_title = "гистограмма распределения суммарной площади чашелистиков и лепестков"
 
-    plt.hist(iris_areas, bins=20, color=gist_color, alpha=0.35, edgecolor=gist_color, density=True)
+    plt.hist(iris_areas, bins=(1 + math.ceil(math.log(len(iris_areas), 2))), color=gist_color, alpha=0.35, edgecolor=gist_color, density=True)
 
     mu, sigma = np.mean(iris_areas), np.std(iris_areas)
     shape_lognorm, loc_lognorm, scale_lognorm = lognorm.fit(iris_areas, floc=0)
@@ -136,7 +139,6 @@ def draw_histogram(iris_areas, specie=''):
     loc_exp, scale_exp = expon.fit(iris_areas)
     loc_uniform, scale_uniform = uniform.fit(iris_areas)
 
-    # Создание оси X
     x = np.linspace(min(iris_areas), max(iris_areas), 100)
 
     plt.plot(x, norm.pdf(x, mu, sigma), linewidth=1, color='darkcyan', label=f'нормальное распределение (μ={mu:.2f}, σ={sigma:.2f})')
