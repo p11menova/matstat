@@ -113,10 +113,10 @@ def custom_boxplot(data, title, specie):
     """
     plt.boxplot(data)
     for i, d in enumerate(data):
-		plt.scatter(1, d, c="blue", alpha=0.5)
-	plt.xlabel('Данные')
-	plt.ylabel('Значение')
-	plt.title(f'Box-plot для {title} {specie}')
+        plt.scatter(1, d, c="blue", alpha=0.5)
+    plt.xlabel('Данные')
+    plt.ylabel('Значение')
+    plt.title(f'Box-plot для {title} {specie}')
     plt.grid()
     filename = "boxplot_sepal_squares" if 'чашелистика' in title else "boxplot_petal_squares"
     scope = "_whole" if not specie else f"_{specie}"
@@ -135,15 +135,11 @@ def draw_histogram(iris_areas, sepal=True, specie=''):
         f"{gist_title + gist_type} для вида {specie} " if specie else f"{gist_title + gist_type} для всей выборки")
     plt.xlabel('площадь чашелистика' if sepal else 'площадь лепестка')
     plt.ylabel('частота')
-    if (sepal):
-        plt.xticks(range(10, 32, 2))
-    else:
-        plt.xticks(range(0, 18, 1))
-    plt.grid("both", color="silver", alpha=0.5)
+
+    plt.grid(True, color="silver", alpha=0.5)
     filename = "sepal_squares" if sepal else "petal_squares"
     scope = "_whole" if not specie else f"_{specie}"
     plt.savefig(filename + scope + '.png')
-    plt.legend()
     plt.close()
 
 
