@@ -11,10 +11,8 @@
  box-plot суммарной площади чашелистика и лепестка для всей совокупности и каждого вида.
 """
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
-
-matplotlib.use('Agg')
+from scipy.stats import norm, lognorm, gamma, expon, uniform
 
 irises_species = dict()  # мапа для разделения по видам
 irises = []  # просто в целом список всех ирисов
@@ -125,16 +123,37 @@ def custom_boxplot(data, title, specie):
 
 
 def draw_histogram(iris_areas, sepal=True, specie=''):
+    print(list(sorted(iris_areas)))
     plt.figure(figsize=(12, 6))
 
     gist_color = 'tomato' if sepal else 'pink'
     gist_title = "гистограмма распределения суммарной площади "
     gist_type = "чашелистиков" if sepal else 'лепестков'
-    plt.hist(iris_areas, bins=20, color=gist_color, alpha=0.5, edgecolor=gist_color)
+
+    plt.hist(iris_areas, bins=20, color=gist_color, alpha=0.5, edgecolor=gist_color, density=True)
+
+    mu, sigma = np.mean(iris_areas), np.std(iris_areas)
+    shape_lognorm, loc_lognorm, scale_lognorm = lognorm.fit(iris_areas, floc=0)
+    shape_gamma, loc_gamma, scale_gamma = gamma.fit(iris_areas)
+    loc_exp, scale_exp = expon.fit(iris_areas)
+    loc_uniform, scale_uniform = uniform.fit(iris_areas)
+
+    # Создание оси X
+    x = np.linspace(min(iris_areas), max(iris_areas), 100)
+
+    plt.plot(x, norm.pdf(x, mu, sigma), linewidth=1, color='darkcyan', label=f'нормальное распределение (μ={mu:.2f}, σ={sigma:.2f})')
+    plt.plot(x, lognorm.pdf(x, shape_lognorm, loc_lognorm, scale_lognorm), color='MediumVioletRed', linewidth=1, label='логнормальное')
+    plt.plot(x, expon.pdf(x, loc_exp, scale_exp), color='DeepSkyBlue', linewidth=1, label='показательное')
+    plt.plot(x, uniform.pdf(x, loc_uniform, scale_uniform), 'hotpink', linewidth=1, label='равномерное')
+
+
+
     plt.title(
         f"{gist_title + gist_type} для вида {specie} " if specie else f"{gist_title + gist_type} для всей выборки")
     plt.xlabel('площадь чашелистика' if sepal else 'площадь лепестка')
-    plt.ylabel('частота')
+    plt.ylabel('плотность вероятности')
+    # plt.xscale('log')
+    plt.legend()
 
     plt.grid(True, color="silver", alpha=0.5)
     filename = "sepal_squares" if sepal else "petal_squares"
@@ -211,8 +230,9 @@ if __name__ == "__main__":
               f"{get_sample_quantile(v, 'petal_length', 'petal_width', 0.4)}")
         sepal_areas = [i['sepal_length'] * i['sepal_width'] for i in v]
         petal_areas = [i['petal_length'] * i['petal_width'] for i in v]
+        # irises_areas = [sepal_areas[j] + petal_areas[j] for j in range(len(sepal_areas))]
         draw_histogram(sepal_areas, True, k)
-        draw_histogram(petal_areas, False, k)
+        draw_histogram(petal_areas, True, k)
         print()
 
         # Эмпирические функции распределения для каждого вида цветка
