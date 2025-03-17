@@ -95,7 +95,7 @@ def empirical_cdf(data, title, specie):
 	hist, edges = np.histogram(data, bins=len(data))
 	Y = hist.cumsum()
 	for i in range(len(Y)):
-		plt.plot([edges[i], edges[i + 1]], [Y[i], Y[i]], c="blue")
+		plt.plot([edges[i], edges[i + 1]], [Y[i], Y[i]], c="MediumVioletRed")
 	plt.xlabel('Значение')
 	plt.ylabel('F(x)')
 	plt.title(f'ЭФР {title} {specie}')
@@ -260,8 +260,8 @@ if __name__ == "__main__":
 
 	real = np.mean(irises_areas)
 	plt.figure(figsize=(10, 5))
-	plt.plot(range(5, 150), mus, marker='o', linestyle='-', color='blue', alpha=0.7)
-	plt.axhline(y=float(real), color='red', linestyle='--', linewidth=2)
+	plt.plot(range(5, 150), mus, marker='o', linestyle='-',linewidth=1, color='DarkMagenta', alpha=0.7)
+	plt.axhline(y=float(real), color='crimson', linestyle='--', linewidth=1)
 	plt.title("График изменения оценки средней площади цветка")
 	plt.xlabel("Количество выборки")
 	plt.ylabel("Оценка")
