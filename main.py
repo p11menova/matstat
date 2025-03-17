@@ -250,6 +250,8 @@ if __name__ == "__main__":
 		# boxplot для площади лепестка
 		custom_boxplot([i['petal_length'] * i['petal_width'] for i in v], 'площади лепестка для вида ', k)
 
+	empirical_cdf(irises_areas, "суммарные площади цветков", "")
+
 	mus = []
 	s = sorted(irises_areas)
 	for l in range(5, 150):
