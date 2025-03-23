@@ -15,6 +15,7 @@ from random import sample
 
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 from scipy.stats import norm, lognorm, gamma, expon, uniform
 
 irises_species = dict()  # мапа для разделения по видам
@@ -165,6 +166,52 @@ def draw_histogram(iris_areas, specie=''):
 	plt.close()
 
 
+# Функция для построения графиков
+# def plot_results(df_results, sample_sizes):
+#     """
+#     Функция для построения гистограмм, box-plot и violin-plot для каждого объема выборки.
+#
+#     Параметры:
+#     - df_results: DataFrame с результатами оценок для каждого объема выборки.
+#     - sample_sizes: Список объемов выборки.
+#     """
+#     # Гистограммы
+#     plt.figure(figsize=(10, 12))  # Уменьшаем размер фигуры
+#     for i, n in enumerate(sample_sizes):
+#         plt.subplot(len(sample_sizes), 1, i + 1)  # Создаем subplot для каждого объема выборки
+#         sns.histplot(df_results[n], kde=False, color='violet', label=f'n={n}', alpha=0.6, edgecolor='black',
+#                      linewidth=1.2)
+#         plt.title(f'Гистограмма оценок θ̂ для объема выборки n={n}', fontsize=10, fontweight='bold')
+#         plt.xlabel('Оценка θ̂', fontsize=8)
+#         plt.ylabel('Частота', fontsize=8)
+#         plt.legend(title=f'Объем выборки: {n}', title_fontsize=8, fontsize=8, loc='upper right')
+#         plt.grid(True, linestyle='--', alpha=0.7)
+#         plt.tick_params(labelsize=8)
+#
+#     plt.tight_layout(h_pad=2)  # Уменьшаем расстояние между subplots
+#     plt.show()
+#
+#     # Box-plot
+#     plt.figure(figsize=(8, 4))
+#     sns.boxplot(data=df_results, palette='viridis')
+#     plt.title('Box-plot оценок θ̂ для разных объемов выборки', fontsize=12, fontweight='bold')
+#     plt.xlabel('Объем выборки (n)', fontsize=10)
+#     plt.ylabel('Оценка θ̂', fontsize=10)
+#     plt.grid(True, linestyle='--', alpha=0.7)
+#     plt.tick_params(labelsize=8)
+#     plt.show()
+#
+#     # Violin-plot
+#     plt.figure(figsize=(8, 4))
+#     sns.violinplot(data=df_results, palette='magma')
+#     plt.title('Violin-plot оценок θ̂ для разных объемов выборки', fontsize=12, fontweight='bold')
+#     plt.xlabel('Объем выборки (n)', fontsize=10)
+#     plt.ylabel('Оценка θ̂', fontsize=10)
+#     plt.grid(True, linestyle='--', alpha=0.7)
+#     plt.tick_params(labelsize=8)
+#     plt.show()
+
+
 if __name__ == "__main__":
 	read_data("iris.csv")
 
@@ -252,23 +299,56 @@ if __name__ == "__main__":
 
 	empirical_cdf(irises_areas, "суммарные площади цветков", "")
 
-	mus = []
-	s = sorted(irises_areas)
-	for l in range(5, 150):
-		new_sample = sample(s, l)
+    mus = []
+    # samples = []
+    s = sorted(irises_areas)
+    for l in range(5, 150):
+        new_sample = sample(s, l)
+        # samples.append(new_sample)
 
-		mu, sigma = np.mean(new_sample), np.std(new_sample)
-		mus.append(mu)
+        mu = np.mean(new_sample)
+        mus.append(mu)
 
-	real = np.mean(irises_areas)
-	plt.figure(figsize=(10, 5))
-	plt.plot(range(5, 150), mus, marker='o', linestyle='-',linewidth=1, color='DarkMagenta', alpha=0.7)
-	plt.axhline(y=float(real), color='crimson', linestyle='--', linewidth=1)
-	plt.title("График изменения оценки средней площади цветка")
-	plt.xlabel("Количество выборки")
-	plt.ylabel("Оценка")
-	plt.grid()
+    real_mean = np.mean(irises_areas)
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(5, 150), mus, marker='o', linestyle='-', linewidth=1, color='DarkMagenta', alpha=0.7)
+    plt.axhline(y=float(real_mean), color='crimson', linestyle='--', linewidth=1)
+    plt.title("График изменения оценки средней площади цветка")
+    plt.xlabel("Количество выборки")
+    plt.ylabel("Оценка")
+    plt.grid()
 
-	filename = "generated_squares_samples_estimates"
-	plt.savefig(filename + '.png')
-	plt.close()
+    filename = "generated_squares_samples_estimates"
+    plt.savefig(filename + '.png')
+    plt.close()
+
+    # Генерация данных: список из нескольких выборок
+    np.random.seed(42)
+    num_samples = 5  # Количество выборок
+    sample_size = 100  # Размер каждой выборки
+
+    data = [np.random.normal(loc=17.82, scale=3.35, size=sample_size) for i in range(num_samples)]
+
+    # Создаем DataFrame для удобства визуализации
+    import pandas as pd
+
+    df = pd.DataFrame({f'Sample {i + 1}': data[i] for i in range(num_samples)})
+    df_melted = df.melt(var_name="Выборка", value_name="Оценка")
+
+    # Создаем фигуру
+    plt.figure(figsize=(12, 6))
+
+    # Violin Plot
+    plt.subplot(1, 2, 1)
+    sns.violinplot(x='Выборка', y='Оценка', data=df_melted, inner="quartile", palette="pastel")
+    plt.title("Violin Plot изменения оценки")
+    plt.xticks(rotation=45)
+
+    # Box Plot
+    plt.subplot(1, 2, 2)
+    sns.boxplot(x='Выборка', y='Оценка', data=df_melted, palette="coolwarm")
+    plt.title("Box Plot of изменения оценки")
+    plt.xticks(rotation=45)
+
+    plt.tight_layout()
+    plt.show()
