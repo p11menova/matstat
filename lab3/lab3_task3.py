@@ -62,12 +62,23 @@ print(f"Cramér's V: {cramer_v:.4f}  (0 — нет связи, 1 — идеал�
 print("Умеренная ассоциация между рейтингом и национальностью")
 
 # 6. Визуализация — «тепловая карта» с тёмными цветами для больших значений
+# 6. Визуализация — «тепловая карта» с подписями
 plt.figure(figsize=(8, 5))
 plt.imshow(cont_table, aspect='auto', cmap='PuBu')  # Обратная палитра
 plt.colorbar(label='Count')
+
+# Подписи осей
 plt.xticks(np.arange(len(labels)), labels)
 plt.yticks(np.arange(len(cont_table.index)), cont_table.index)
-plt.title("Таблицы сопряженности\nРейтинг и Национальность")
+plt.title("Таблица сопряжённости\nРейтинг и Национальность")
 plt.xlabel("Рейтинг")
 plt.ylabel("Национальность")
+
+# Добавляем числа в ячейки
+for i in range(cont_table.shape[0]):
+    for j in range(cont_table.shape[1]):
+        count = cont_table.iat[i, j]
+        plt.text(j, i, str(count), ha='center', va='center', color='black', fontsize=10)
+
+plt.tight_layout()
 plt.show()
