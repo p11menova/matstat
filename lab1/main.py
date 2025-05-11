@@ -129,8 +129,6 @@ def custom_boxplot(data, title, specie):
 def draw_histogram(iris_areas, specie=''):
     plt.figure(figsize=(12, 6))
 
-    print(list(sorted(iris_areas)))
-
     gist_color = 'hotpink'
     gist_title = "гистограмма распределения суммарной площади чашелистиков и лепестков"
 
@@ -214,11 +212,6 @@ def draw_histogram(iris_areas, specie=''):
 
 if __name__ == "__main__":
     read_data("iris.csv")
-
-    # print("sepal_areas")
-    # print(" ".join(list(sorted([str(round(i["sepal_width"]* i['sepal_length'], 2)) for i in irises] ))))
-    # print("petal_areas")
-    # print(" ".join(list(sorted([str(round(i["petal_width"]* i['petal_length'], 2)) for i in irises] ))))
 
     print_max_min_specie()
     print(f"выборочное среднее значение площади чашелистика для всей совокупности: "
